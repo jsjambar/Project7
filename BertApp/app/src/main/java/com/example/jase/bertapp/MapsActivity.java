@@ -35,7 +35,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     // google map vars
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient = null;
-    private Location updatedLoc;
     private LocationRequest mLocationRequest = new LocationRequest();
     // Updatable marker.
     Marker me;
@@ -126,9 +125,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onLocationChanged(Location location) {
-        updatedLoc = location;
+        LatLng newLoc = new LatLng(location.getLatitude(), location.getLongitude());
 
-        me.setPosition(new LatLng(location.getLatitude(),location.getLongitude()));
+        // Update our marker and move the camera to center the new position.
+        me.setPosition(newLoc);
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(newLoc));
     }
 
 
