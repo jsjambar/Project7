@@ -36,8 +36,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient = null;
     private LocationRequest mLocationRequest = new LocationRequest();
+
     // Updatable marker.
     Marker me;
+    // First update var
+    private int first = 0;
 
     //Rotterdam center.
     private LatLng rDam = new LatLng(51.9244201, 4.4777325);
@@ -86,7 +89,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Add sights to the map.
         List<Sight> sights = Sight.getSights();
         for (Sight sight : sights) {
-            mMap.addMarker(new MarkerOptions().position(sight.coords).title(sight.title));
+            mMap.addMarker(new MarkerOptions().position(sight.coords).title(sight.title).snippet(sight.description));
         }
 
         // Add the marker of the user which gets updated in locationChanged()
@@ -129,7 +132,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Update our marker and move the camera to center the new position.
         me.setPosition(newLoc);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(newLoc));
+        if(first == 0) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(newLoc));
+            first++;
+        }
     }
 
 
