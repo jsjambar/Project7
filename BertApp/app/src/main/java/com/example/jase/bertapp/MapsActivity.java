@@ -1,14 +1,19 @@
 package com.example.jase.bertapp;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.example.jase.bertapp.classes.Sight;
 import com.google.android.gms.common.ConnectionResult;
@@ -29,6 +34,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.location.LocationListener;
 import java.util.List;
+import java.util.Locale;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
@@ -73,6 +79,46 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
                 .addLocationRequest(mLocationRequest);
         PendingResult<LocationSettingsResult> result = LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient, builder.build());
+
+        PackageManager pm = this.getPackageManager();
+        int hasPermission = pm.checkPermission(
+                Manifest.permission.RECORD_AUDIO,
+                this.getPackageName());
+        if (hasPermission != PackageManager.PERMISSION_GRANTED) {
+            Log.d(this.getPackageName(), "No permission");
+        }
+
+        ImageButton button = (ImageButton) findViewById(R.id.button);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                promptSpeechInput();
+            }
+        });
+    }
+
+    public void promptSpeechInput() {
+        Intent i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        i.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        i.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        i.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say something to Bert");
+
+        try {
+            startActivityForResult(i, 100);
+        } catch (Exception e) {
+            Toast.makeText(this, "Sorry your device does not support your speech language.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent i) {
+        if (requestCode == 100 && i != null && resultCode == RESULT_OK) {
+            List<String> result = i.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+            Toast.makeText(this, result.get(0), Toast.LENGTH_LONG).show();
+        }
+
+        super.onActivityResult(requestCode, resultCode, i);
     }
 
     /* Initial Map */
