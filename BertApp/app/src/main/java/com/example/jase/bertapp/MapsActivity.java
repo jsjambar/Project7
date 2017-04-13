@@ -9,13 +9,14 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.jase.bertapp.classes.Sight;
+import com.example.jase.bertapp.kdtree.KDTree;
+import com.example.jase.bertapp.kdtree.exception.KeyDuplicateException;
+import com.example.jase.bertapp.kdtree.exception.KeySizeException;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -38,18 +39,24 @@ import java.util.Locale;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-    // google map vars
+    // Instance of map to use in click listeners.
+    private MapsActivity mapsActivity;
+
+    // Google map vars
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient = null;
     private LocationRequest mLocationRequest = new LocationRequest();
 
     // Updatable marker.
-    Marker me;
+    private Marker me;
     // First update var
     private int first = 0;
 
-    //Rotterdam center.
+    // Rotterdam center.
     private LatLng rDam = new LatLng(51.9244201, 4.4777325);
+
+    // KDTree for sight points
+    private KDTree tree;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +64,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         MapsInitializer.initialize(getApplicationContext());
+
+        tree = new KDTree(2);
+
+        mapsActivity = this;
 
         // Mapfragment that we use for google maps
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -83,22 +94,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .addLocationRequest(mLocationRequest);
         PendingResult<LocationSettingsResult> result = LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient, builder.build());
 
-        PackageManager pm = this.getPackageManager();
-        int hasPermission = pm.checkPermission(
-                Manifest.permission.RECORD_AUDIO,
-                this.getPackageName());
-        if (hasPermission != PackageManager.PERMISSION_GRANTED) {
-            Log.d(this.getPackageName(), "No permission");
-        }
-
         ImageButton button = (ImageButton) findViewById(R.id.button);
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                promptSpeechInput();
-            }
-        });
+        button.setOnClickListener((View v) -> promptSpeechInput());
     }
 
     public void promptSpeechInput() {
@@ -127,7 +125,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     /* Initial Map */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-
         // Center map on Rotterdam (this should be the location of the user)
         mMap = googleMap;
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(rDam, 15));
@@ -135,7 +132,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Add sights to the map.
         List<Sight> sights = Sight.getSights();
         for (Sight sight : sights) {
-            mMap.addMarker(new MarkerOptions().position(sight.coords).title(sight.title).snippet(sight.description));
+            mMap.addMarker(new MarkerOptions().position(sight.getCoords()).title(sight.getTitle()).snippet(sight.getDescription()));
+            try {
+                tree.insert(new double[]{sight.getCoords().latitude, sight.getCoords().longitude}, sight);
+            } catch (KeySizeException e) {
+                e.printStackTrace();
+            } catch (KeyDuplicateException e) {
+                e.printStackTrace();
+            }
         }
 
         // Add the marker of the user which gets updated in locationChanged()
@@ -146,6 +150,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         .title("You're right here!")
                         .zIndex(1.0f)
         );
+
+        mMap.setOnMapClickListener(latLng -> {
+            me.setPosition(latLng);
+
+            // TODO: remove this and add to onLocationChanged
+            try {
+                double latitude = me.getPosition().latitude;
+                double longtitude = me.getPosition().longitude;
+                List<Sight> points = tree.rangeSearch(new double[]{latitude, longtitude}, 0.0004);
+                if (!points.isEmpty()) {
+                    String text = points.size() == 1 ? " point found " : " points found ";
+                    Toast.makeText(mapsActivity, points.size() + text + points.get(0).getTitle(), Toast.LENGTH_LONG).show();
+                }
+            } catch (KeySizeException e) {
+                e.printStackTrace();
+            }
+
+            if(first == 0) {
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                first++;
+            }
+        });
+
     }
 
     @Override
