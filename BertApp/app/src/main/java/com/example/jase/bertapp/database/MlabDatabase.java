@@ -27,7 +27,6 @@ public class MlabDatabase {
         this.mongo = new MongoClient(new ServerAddress(host, port), Collections.singletonList(MongoCredential.createCredential(username, databaseName, password.toCharArray())));
         this.db = mongo.getDatabase(databaseName);
         this.sightCollection = db.getCollection("sights");
-        //this.facCollection = db.getCollection(NetworkManager.getInstance().getServerData().getServerType().getName() + "-factions");
     }
 
     public MongoClient getMongo() {

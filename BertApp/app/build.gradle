@@ -37,3 +37,4 @@ dependencies {
     compile group: 'org.mongodb', name: 'mongo-java-driver', version: '3.2.2'
     testCompile 'junit:junit:4.12'
 }
+

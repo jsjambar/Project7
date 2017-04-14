@@ -13,7 +13,9 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.example.jase.bertapp.classes.Sight;
+import com.example.jase.bertapp.database.MlabDatabase;
+import com.example.jase.bertapp.database.Sight;
+import com.example.jase.bertapp.database.SightsCollectionManager;
 import com.example.jase.bertapp.kdtree.KDTree;
 import com.example.jase.bertapp.kdtree.exception.KeyDuplicateException;
 import com.example.jase.bertapp.kdtree.exception.KeySizeException;
@@ -34,8 +36,13 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.location.LocationListener;
+
+import org.bson.Document;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
@@ -57,6 +64,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     // KDTree for sight points
     private KDTree tree;
+
+    private final Map<String, Sight> sightMap = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +106,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         ImageButton button = (ImageButton) findViewById(R.id.button);
 
         button.setOnClickListener((View v) -> promptSpeechInput());
+
+        //TODO: remove when we parse data.
+        SightsCollectionManager.getInstance().insertSightsToDB();
+        MlabDatabase.getInstance().getSightCollection();
     }
 
     public void promptSpeechInput() {
@@ -129,18 +142,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(rDam, 15));
 
-        // Add sights to the map.
-        List<Sight> sights = Sight.getSights();
-        for (Sight sight : sights) {
-            mMap.addMarker(new MarkerOptions().position(sight.getCoords()).title(sight.getTitle()).snippet(sight.getDescription()));
-            try {
-                tree.insert(new double[]{sight.getCoords().latitude, sight.getCoords().longitude}, sight);
-            } catch (KeySizeException e) {
-                e.printStackTrace();
-            } catch (KeyDuplicateException e) {
-                e.printStackTrace();
-            }
-        }
+//        // Add sights to the map.
+//        for (Document doc : MlabDatabase.getInstance().getSightCollection().find()) {
+//            Sight sight = getSight(doc.getString("title"));
+//            mMap.addMarker(new MarkerOptions().position(sight.getCords()).title(sight.getTitle()).snippet(sight.getDesc() +
+//                    "\nType: " + sight.getType()));
+//            try {
+//                tree.insert(new double[]{sight.getCords().latitude, sight.getCords().longitude}, sight);
+//            } catch (KeySizeException e) {
+//                e.printStackTrace();
+//            } catch (KeyDuplicateException e) {
+//                e.printStackTrace();
+//            }
+//        }
 
         // Add the marker of the user which gets updated in locationChanged()
         me = mMap.addMarker(
@@ -221,4 +235,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         // Connection to Google API failed..
     }
+
+    public Sight getSight(String title) {
+        if (sightMap.containsKey(title))
+            return sightMap.get(title);
+        sightMap.put(title, new Sight(title));
+        return sightMap.get(title);
+    }
+
 }
