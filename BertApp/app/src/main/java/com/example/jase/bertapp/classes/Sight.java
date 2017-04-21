@@ -62,4 +62,12 @@ public class Sight {
                     new LatLng(51.915478,4.4748713))
         );
     }
+
+    public static Sight getSight(String title) {
+        for (Sight sight : getSights())
+            if (sight.getTitle().equalsIgnoreCase(title) || sight.getTitle().contains(title))
+                return sight;
+        return null;
+    }
+
 }

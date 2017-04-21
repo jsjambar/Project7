@@ -325,7 +325,6 @@ public class KDTree<T> implements Serializable {
 
         for (int i = 0; i < size; ++i) {
             KDNode<T> node = nnList.removeHighest();
-            HPoint p = node.getHPoint();
             if (metric.distance(node.getHPoint().getCoord(), key) < dist) {
                 nbrs.push(node.getValue());
             }

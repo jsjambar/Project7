@@ -3,12 +3,15 @@ package com.example.jase.bertapp;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -17,6 +20,8 @@ import com.example.jase.bertapp.classes.Sight;
 import com.example.jase.bertapp.kdtree.KDTree;
 import com.example.jase.bertapp.kdtree.exception.KeyDuplicateException;
 import com.example.jase.bertapp.kdtree.exception.KeySizeException;
+import com.example.jase.bertapp.parser.DirectionsJSONParser;
+import com.example.jase.bertapp.utils.DirectionUtil;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -34,8 +39,18 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+
+import static com.example.jase.bertapp.utils.JsonUtil.downloadUrl;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
@@ -57,6 +72,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     // KDTree for sight points
     private KDTree tree;
+
+    private final List<Polyline> lines = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,9 +134,56 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (requestCode == 100 && i != null && resultCode == RESULT_OK) {
             List<String> result = i.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
             Toast.makeText(this, result.get(0), Toast.LENGTH_LONG).show();
+
+            Sight sight;
+            for (String res : result) {
+                for (String part : res.split(" ")) {
+                    if (part.length() <= 4 || part.equalsIgnoreCase("museum"))
+                        continue;
+                    if (Arrays.asList("near", "nearest", "dichtbij", "dichtbijzijnste", "dichtbijzijnde").contains(part.toLowerCase())) {
+                        showPathToNearest();
+                        break;
+                    }
+                    sight = Sight.getSight(part);
+                    if (sight != null) {
+                        showPathToSight(sight);
+                        break;
+                    }
+                }
+            }
+
         }
 
         super.onActivityResult(requestCode, resultCode, i);
+    }
+
+    private void showPathToSight(Sight sight) {
+        if (sight != null) {
+            // Remove current lines
+            for (Polyline line : lines) {
+                line.remove();
+            }
+            lines.clear();
+
+            // Getting URL to the Google Directions API
+            String url = DirectionUtil.getDirectionsUrl(me.getPosition(), sight.getCoords());
+
+            DownloadTask downloadTask = new DownloadTask();
+
+            // Start downloading json data from Google Directions API
+            downloadTask.execute(url);
+
+        }
+    }
+
+    private void showPathToNearest() {
+        try {
+            Sight nearest = (Sight) tree.nearest(new double[]{me.getPosition().latitude, me.getPosition().longitude});
+            showPathToSight(nearest);
+        } catch (KeySizeException e) {
+            e.printStackTrace();
+        }
+
     }
 
     /* Initial Map */
@@ -171,6 +235,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                 first++;
             }
+
         });
 
     }
@@ -221,4 +286,106 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         // Connection to Google API failed..
     }
+
+
+    //Sadly has to be in this class to remove the lines
+    private class DownloadTask extends AsyncTask<String, Void, String> {
+
+        private final ParserTask parserTask;
+
+        public DownloadTask() {
+            this.parserTask = new ParserTask();
+        }
+
+        // Downloading data in non-ui thread
+        @Override
+        protected String doInBackground(String... url) {
+
+            // For storing data from web service
+            String data = "";
+
+            try{
+                // Fetching the data from web service
+                data = downloadUrl(url[0]);
+            }catch(Exception e){
+                Log.d("Background Task", e.toString());
+            }
+            return data;
+        }
+
+        // Executes in UI thread, after the execution of
+        // doInBackground()
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            // Invokes the thread for parsing the JSON data
+            parserTask.execute(result);
+        }
+
+        /** A class to parse the Google Places in JSON format */
+        public class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String,String>>>> {
+
+            // Parsing the data in non-ui thread
+            @Override
+            protected List<List<HashMap<String, String>>> doInBackground(String... jsonData) {
+
+                JSONObject jObject;
+                List<List<HashMap<String, String>>> routes = null;
+
+                try{
+                    jObject = new JSONObject(jsonData[0]);
+                    DirectionsJSONParser parser = new DirectionsJSONParser();
+
+                    // Starts parsing data
+                    routes = parser.parse(jObject);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                return routes;
+            }
+
+            // Executes in UI thread, after the parsing process
+            @Override
+            protected void onPostExecute(List<List<HashMap<String, String>>> result) {
+                ArrayList<LatLng> points;
+                PolylineOptions lineOptions = null;
+
+                // Traversing through all the routes
+                for(int i=0;i<result.size();i++){
+                    points = new ArrayList<>();
+                    lineOptions = new PolylineOptions();
+
+                    // Fetching i-th route
+                    List<HashMap<String, String>> path = result.get(i);
+
+                    // Fetching all the points in i-th route
+                    for(int j=0;j<path.size();j++){
+                        HashMap<String,String> point = path.get(j);
+
+                        double lat = Double.parseDouble(point.get("lat"));
+                        double lng = Double.parseDouble(point.get("lng"));
+                        LatLng position = new LatLng(lat, lng);
+
+                        points.add(position);
+                    }
+
+                    // Adding all the points in the route to LineOptions
+                    lineOptions.addAll(points);
+                    lineOptions.width(4);
+                    lineOptions.color(Color.BLACK);
+                }
+                Polyline polyline = mMap.addPolyline(lineOptions);
+                lines.add(polyline);
+
+                // Drawing polyline in the Google Map for the i-th route
+
+            }
+        }
+
+    }
+
+
+
 }
+
