@@ -79,7 +79,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         // Instance of the application
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps);
+
+        /*setContentView(R.layout.activity_maps);
         MapsInitializer.initialize(getApplicationContext());
 
         tree = new KDTree(2);
@@ -114,6 +115,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         ImageButton button = (ImageButton) findViewById(R.id.button);
 
         button.setOnClickListener((View v) -> promptSpeechInput());
+        */
     }
 
     public void promptSpeechInput() {
@@ -216,7 +218,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         );
 
         mMap.setOnMapClickListener(latLng -> {
-            me.setPosition(latLng);
+            // This is only for nearby testing purposes.
+            //me.setPosition(latLng);
 
             // TODO: remove this and add to onLocationChanged
             try {
