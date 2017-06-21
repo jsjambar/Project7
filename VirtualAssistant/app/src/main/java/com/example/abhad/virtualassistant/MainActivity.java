@@ -1,6 +1,9 @@
 package com.example.abhad.virtualassistant;
 
 import android.Manifest;
+import android.content.Intent;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,6 +15,7 @@ import android.widget.TextView;
 import com.google.gson.JsonElement;
 
 import java.util.Map;
+import java.util.Objects;
 
 import ai.api.AIListener;
 import ai.api.android.AIConfiguration;
@@ -43,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements AIListener{
         this.ListenButton = (Button) findViewById(R.id.startListeningButton);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onResult(AIResponse response) {
         Result result = response.getResult();
@@ -61,8 +66,13 @@ public class MainActivity extends AppCompatActivity implements AIListener{
                 "\nParameters: " + this.ParameterString);
 
         Log.i("Query: ", result.getResolvedQuery());
-        Log.i("Action: ", result.getResolvedQuery());
-        Log.i("Parameters: ", result.getResolvedQuery());
+        Log.i("Action: ", result.getAction());
+
+        if(Objects.equals(result.getAction(), "FindLocation")){
+            Intent intent = new Intent(getApplicationContext(), ResultActivity.class);
+            intent.putExtra("ParameterString", this.ParameterString);
+            startActivity(intent);
+        }
     }
 
     @Override
