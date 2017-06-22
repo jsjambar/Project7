@@ -24,13 +24,15 @@
         tools:layout="@layout/abc_list_menu_item_radio" />
 
     <ImageButton
+        android:id="@+id/BertButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/button"
-        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:background="@null"
-        android:src="@drawable/mic"
-        />
+        android:clickable="true"
+        android:onClick="launchVirtualAssistant"
+        android:src="@drawable/bert" />
 
 </RelativeLayout>

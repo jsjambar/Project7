@@ -80,6 +80,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Instance of the application
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        Bundle data = getIntent().getExtras();
+
         MapsInitializer.initialize(getApplicationContext());
 
         tree = new KDTree(2);
@@ -111,9 +114,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .addLocationRequest(mLocationRequest);
         PendingResult<LocationSettingsResult> result = LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient, builder.build());
 
-        ImageButton button = (ImageButton) findViewById(R.id.button);
+        ImageButton button = (ImageButton) findViewById(R.id.BertButton);
 
-        button.setOnClickListener((View v) -> promptSpeechInput());
+        button.setOnClickListener((View v) -> launchVirtualAssistant());
+
+
     }
 
     public void promptSpeechInput() {
@@ -385,7 +390,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-
-
+    public void launchVirtualAssistant(){
+        Intent intent = new Intent(getApplicationContext(), VirtualAssistantActivity.class);
+        startActivity(intent);
+    }
 }
 
