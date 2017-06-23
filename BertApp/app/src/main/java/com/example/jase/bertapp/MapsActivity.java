@@ -83,6 +83,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         Bundle data = getIntent().getExtras();
 
+        /*setContentView(R.layout.activity_maps);
         MapsInitializer.initialize(getApplicationContext());
 
         tree = new KDTree(2);
@@ -114,11 +115,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .addLocationRequest(mLocationRequest);
         PendingResult<LocationSettingsResult> result = LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient, builder.build());
 
+        button.setOnClickListener((View v) -> launchVirtualAssistant()); */
+
         ImageButton button = (ImageButton) findViewById(R.id.BertButton);
-
-        button.setOnClickListener((View v) -> launchVirtualAssistant());
-
-
+        button.setOnClickListener((View v) -> promptSpeechInput());
     }
 
     public void promptSpeechInput() {
@@ -221,7 +221,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         );
 
         mMap.setOnMapClickListener(latLng -> {
-            me.setPosition(latLng);
+            // This is only for nearby testing purposes.
+            //me.setPosition(latLng);
 
             // TODO: remove this and add to onLocationChanged
             try {
