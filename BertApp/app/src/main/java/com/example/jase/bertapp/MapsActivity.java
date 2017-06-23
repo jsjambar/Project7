@@ -1,6 +1,7 @@
 package com.example.jase.bertapp;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -54,6 +55,10 @@ import static com.example.jase.bertapp.utils.JsonUtil.downloadUrl;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
+    // User preferences
+    String preference;
+    String distance;
+
     // Instance of map to use in click listeners.
     private MapsActivity mapsActivity;
 
@@ -82,9 +87,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_maps);
 
         Bundle data = getIntent().getExtras();
-
-        /*setContentView(R.layout.activity_maps);
+        if (data != null) {
+            preference = data.getString("step1");
+            distance = data.getString("step2");
+        }
         MapsInitializer.initialize(getApplicationContext());
+
+        /*Context context = getApplicationContext();
+        int duration = Toast.LENGTH_SHORT;
+        CharSequence text = preference + " x " + distance;
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();*/
 
         tree = new KDTree(2);
 
@@ -115,6 +128,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .addLocationRequest(mLocationRequest);
         PendingResult<LocationSettingsResult> result = LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient, builder.build());
 
+        /*
         button.setOnClickListener((View v) -> launchVirtualAssistant()); */
 
         ImageButton button = (ImageButton) findViewById(R.id.BertButton);

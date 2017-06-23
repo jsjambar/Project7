@@ -1,6 +1,7 @@
-package layout.xml;
+package com.example.jase.bertapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -29,9 +30,7 @@ public class menu2 extends AppCompatActivity {
             step1 = extras.getString("step1");
         }
 
-        Context context = getApplicationContext();
-        int duration = Toast.LENGTH_SHORT;
-
+        Intent mapIntent = new Intent(getBaseContext(), MapsActivity.class);
         Button btnSearch = (Button) findViewById(R.id.btnSearch);
         EditText fieldDistance = (EditText) findViewById(R.id.distance);
 
@@ -39,10 +38,9 @@ public class menu2 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 distance = fieldDistance.getText().toString();
-
-                CharSequence text = step1 + " x " + distance;
-                Toast toast = Toast.makeText(context, text, duration);
-                toast.show();
+                mapIntent.putExtra("step1", step1);
+                mapIntent.putExtra("step2", distance);
+                startActivity(mapIntent);
             }
         });
 

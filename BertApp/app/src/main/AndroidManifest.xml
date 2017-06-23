@@ -32,18 +32,8 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <!--
         <activity
             android:name=".menu"
-            android:label="@string/title_activity_maps">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        -->
-        <activity
-            android:name="layout.xml.menu"
             android:label="@string/title_activity_menu"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -53,14 +43,18 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".menu2"
+            android:label="@string/title_activity_menu2"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".MapsActivity"
+            android:label="@string/title_activity_maps"/>
+        <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".VirtualAssistantActivity">
-            android:name="layout.xml.menu2"
-            android:label="@string/title_activity_menu2"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+        <activity android:name=".VirtualAssistantActivity" />
+
     </application>
 
 </manifest>
