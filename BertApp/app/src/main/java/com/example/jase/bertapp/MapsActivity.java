@@ -293,7 +293,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Connection to Google API failed..
     }
 
-
     //Sadly has to be in this class to remove the lines
     private class DownloadTask extends AsyncTask<String, Void, String> {
 
