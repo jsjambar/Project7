@@ -128,8 +128,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .addLocationRequest(mLocationRequest);
         PendingResult<LocationSettingsResult> result = LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient, builder.build());
 
+        /*
+        button.setOnClickListener((View v) -> launchVirtualAssistant()); */
+
         ImageButton button = (ImageButton) findViewById(R.id.BertButton);
-        button.setOnClickListener((View v) -> launchVirtualAssistant());
+        button.setOnClickListener((View v) -> promptSpeechInput());
+    }
+
+    public void promptSpeechInput() {
+        Intent i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        i.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        i.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        i.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say something to Bert");
+
+        try {
+            startActivityForResult(i, 100);
+        } catch (Exception e) {
+            Toast.makeText(this, "Sorry your device does not support your speech language.", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
