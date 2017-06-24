@@ -5,5 +5,11 @@
     <string name="StartListeningButtonText">Ask Bert for help</string>
     <string name="title_activity_menu">menu</string>
     <string name="title_activity_menu2">menu2</string>
->>>>>>> master
+    <string name="title_activity_main_navigation">MainNavigation</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    >>>>>>> master
 </resources>

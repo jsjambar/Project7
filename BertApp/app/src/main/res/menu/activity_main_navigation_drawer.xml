@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single" android:title="Main">
+        <item
+            android:id="@+id/nav_navigate"
+            android:title="Navigate" />
+        <item
+            android:id="@+id/nav_rotterdamDex"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="Rotterdam Dex" />
+    </group>
+    <group android:checkableBehavior="single" android:title="User">
+        <item
+            android:id="@+id/nav_loginSignup"
+            android:title="Log in / Sign up" />
+        <item
+            android:id="@+id/nav_settings"
+            android:title="Settings" />
+    </group>
+</menu>
