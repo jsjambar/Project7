@@ -18,4 +18,11 @@
         Website: %5$s
     ]]>
     </string>
+    <string name="txtToDoString">What would you like to do?</string>
+    <string name="btnFoodString">Food and drinks</string>
+    <string name="btnGoString">Go out</string>
+    <string name="btnRelaxString">Relaxation</string>
+    <string name="txtOrString">- OR -</string>
+    <string name="btnLookUpString">Look up a location.</string>
+    <string name="selectedPlaceString">Geselecteerde plaats:</string>
 </resources>
