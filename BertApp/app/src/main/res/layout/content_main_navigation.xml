@@ -9,11 +9,11 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/txtToDo"
+            android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/txtToDoString"
-            android:layout_marginTop="20dp"
+            android:text="What would you like to do?"
+            android:layout_marginTop="100dp"
             android:textAlignment="center"
             android:textSize="25sp" />
 
@@ -21,20 +21,21 @@
             android:id="@+id/btnFood"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="@string/btnFoodString" />
+            android:layout_marginTop="40dp"
+            android:text="Food and drinks" />
 
         <Button
             android:id="@+id/btnGo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/btnGoString" />
+            android:text="Go out" />
 
         <Button
             android:id="@+id/btnRelax"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/btnRelaxString" />
+            android:text="Relaxation" />
+
         <TextView
             android:id="@+id/txtOr"
             android:layout_width="match_parent"

@@ -33,8 +33,8 @@
             android:value="AIzaSyDQyrqomkBcQvGovPoLRyHMlaP6P6prjZs" />
 
         <activity
-            android:name=".menu"
-            android:label="@string/title_activity_menu"
+            android:name=".MainNavigation"
+            android:label="@string/title_activity_main_navigation"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -43,18 +43,19 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".menu"
+            android:label="@string/title_activity_menu"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
             android:name=".menu2"
             android:label="@string/title_activity_menu2"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".MapsActivity"
-            android:label="@string/title_activity_maps"/>
-        <activity
-            android:name=".MainActivity"
-            android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:label="@string/title_activity_maps" />
         <activity android:name=".VirtualAssistantActivity" />
-
+        <activity android:name=".LoginActivity" />
+        <activity android:name=".SignUpActivity"></activity>
     </application>
 
 </manifest>
