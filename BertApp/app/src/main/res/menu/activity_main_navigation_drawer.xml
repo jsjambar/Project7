@@ -11,8 +11,11 @@
     </group>
     <group android:checkableBehavior="single" android:title="User">
         <item
-            android:id="@+id/nav_loginSignup"
-            android:title="Log in / Sign up" />
+            android:id="@+id/nav_login"
+            android:title="Log in" />
+        <item
+            android:id="@+id/nav_signup"
+            android:title="Sign up" />
         <item
             android:id="@+id/nav_settings"
             android:title="Settings" />

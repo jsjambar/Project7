@@ -76,14 +76,18 @@ public class MainNavigation extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_navigate) {
-            // Handle the camera action
-
+            // Handle main screen
             startActivity(new Intent(this, menu.class));
         } else if (id == R.id.nav_rotterdamDex) {
-
-        } else if (id == R.id.nav_loginSignup) {
+            // Handle RotterdamDex-Activity
+        } else if (id == R.id.nav_login) {
+            // Handle login-Activity
             startActivity(new Intent(this, LoginActivity.class));
+        } else if (id == R.id.nav_signup) {
+            // Handle sign up-Activity
+            startActivity(new Intent(this, SignUpActivity.class));
         } else if (id == R.id.nav_settings) {
+            // Handle settings-Activity
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
