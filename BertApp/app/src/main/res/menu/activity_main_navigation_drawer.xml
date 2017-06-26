@@ -6,8 +6,10 @@
             android:title="Navigate" />
         <item
             android:id="@+id/nav_rotterdamDex"
-            android:icon="@drawable/ic_menu_gallery"
             android:title="Rotterdam Dex" />
+        <item
+            android:id="@+id/nav_virtualAssistant"
+            android:title="Virtual Assistant" />
     </group>
     <group android:checkableBehavior="single" android:title="User">
         <item

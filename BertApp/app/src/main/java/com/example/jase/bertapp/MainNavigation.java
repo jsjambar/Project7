@@ -96,6 +96,9 @@ public class MainNavigation extends AppCompatActivity
             startActivity(new Intent(this, menu.class));
         } else if (id == R.id.nav_rotterdamDex) {
             // Handle RotterdamDex-Activity
+        } else if (id == R.id.nav_virtualAssistant) {
+            // Handle Virtual Assistant-Activity
+            startActivity(new Intent(this, VirtualAssistantActivity.class));
         } else if (id == R.id.nav_login) {
             // Handle login-Activity
             startActivity(new Intent(this, LoginActivity.class));
