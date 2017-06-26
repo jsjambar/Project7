@@ -19,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -49,6 +50,7 @@ public class MainNavigation extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         this.InitializeChoices();
+        this.InitializeGooglePlaces();
     }
 
     @Override
@@ -162,6 +164,7 @@ public class MainNavigation extends AppCompatActivity
      */
     @Override
     public void onPlaceSelected(Place place) {
+        Log.i("Place: ", place.toString());
         // Format the returned place's details and display them in the TextView.
         mPlaceDetailsText.setText(formatPlaceDetails(getResources(), place.getName(), place.getId(),
                 place.getAddress(), place.getPhoneNumber(), place.getWebsiteUri()));
@@ -169,8 +172,10 @@ public class MainNavigation extends AppCompatActivity
         CharSequence attributions = place.getAttributions();
         if (!TextUtils.isEmpty(attributions)) {
             mPlaceAttribution.setText(Html.fromHtml(attributions.toString()));
+            Log.i("DetailsFound:", place.toString());
         } else {
             mPlaceAttribution.setText("");
+            Log.i("DetailsNotFound: ", place.toString());
         }
     }
 
