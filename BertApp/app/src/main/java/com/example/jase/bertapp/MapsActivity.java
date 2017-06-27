@@ -74,6 +74,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleApiClient mGoogleApiClient = null;
     private LocationRequest mLocationRequest = new LocationRequest();
 
+    Polyline polyline = null;
+
     // Updatable marker.
     private Marker me;
     // First update var
@@ -216,14 +218,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Update our marker and move the camera to center the new position.
         me.setPosition(newLoc);
+
+        if(polyline != null) {
+            polyline.remove();
+        }
+
+        String url = getMapsApiDirectionsUrl(newLoc, new LatLng(51.9054439, 4.4644487));
+        ReadTask downloadTask = new ReadTask();
+        // Start downloading json data from Google Directions API
+        downloadTask.execute(url);
+
+        // Move camera to the user's current location for one time
         if(first == 0) {
             mMap.moveCamera(CameraUpdateFactory.newLatLng(newLoc));
-
-            String url = getMapsApiDirectionsUrl(newLoc, new LatLng(51.9054439, 4.4644487));
-            ReadTask downloadTask = new ReadTask();
-            // Start downloading json data from Google Directions API
-            downloadTask.execute(url);
-
             first++;
         }
     }
@@ -381,15 +388,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         @Override
         protected List<List<HashMap<String, String>>> doInBackground(
                 String... jsonData) {
-            // TODO Auto-generated method stub
             JSONObject jObject;
             List<List<HashMap<String, String>>> routes = null;
             try {
                 jObject = new JSONObject(jsonData[0]);
                 PathJSONParser parser = new PathJSONParser();
                 routes = parser.parse(jObject);
-
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -422,7 +426,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 polyLineOptions.color(Color.BLUE);
             }
 
-            mMap.addPolyline(polyLineOptions);
+            polyline = mMap.addPolyline(polyLineOptions);
         }}
 }
 
