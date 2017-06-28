@@ -44,23 +44,24 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-import static com.example.jase.bertapp.utils.JsonUtil.downloadUrl;
-
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, GoogleMap.OnMarkerClickListener {
 
     // User preferences
     String preference;
@@ -103,6 +104,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             preference = data.getString("step1");
             distance = data.getString("step2");
         }
+
+        String placesUrl = getPlacesUrl(preference, rDam, distance); // change rDam to newLoc
+        new JsonParser().execute(placesUrl);
 
         MapsInitializer.initialize(getApplicationContext());
         // Mapfragment that we use for google maps
@@ -161,9 +165,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Center map on Rotterdam (this should be the location of the user)
         mMap = googleMap;
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(rDam, 15));
+        mMap.setOnMarkerClickListener(this);
 
         // Add sights to the map.
-        List<Sight> sights = Sight.getSights();
+        /*List<Sight> sights = Sight.getSights();
+
         for (Sight sight : sights) {
             mMap.addMarker(new MarkerOptions().position(sight.getCoords()).title(sight.getTitle()).snippet(sight.getDescription()));
             try {
@@ -173,7 +179,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             } catch (KeyDuplicateException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
 
         // Add the marker of the user which gets updated in locationChanged()
         me = mMap.addMarker(
@@ -207,7 +213,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
 
         });
-
     }
 
     @Override
@@ -239,10 +244,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             polyline.remove();
         }
 
+        // If location is selected we gotta do this...
+
+        /*
         String url = getMapsApiDirectionsUrl(newLoc, new LatLng(51.9054439, 4.4644487));
         ReadTask downloadTask = new ReadTask();
         // Start downloading json data from Google Directions API
         downloadTask.execute(url);
+        */
 
         // Move camera to the user's current location for one time
         if(first == 0) {
@@ -263,6 +272,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         startActivity(intent);
     }
 
+
+    private String getPlacesUrl(String preference, LatLng loc, String range) {
+        //https://maps.googleapis.com/maps/api/place/textsearch/xml?query=restaurants+in+Rotterdam&key=AIzaSyBKEDj2HEaWj4yheUYA0NQRtc0QsakDiLw
+
+        //Refactor values into usable data
+        Double rawLat = loc.latitude;
+        Double rawLong = loc.longitude;
+        String location = "location="+String.valueOf(rawLat)+","+String.valueOf(rawLong);
+
+        String type = "type="+preference;
+        String radius = "radius="+range;
+        String key = "AIzaSyBKEDj2HEaWj4yheUYA0NQRtc0QsakDiLw";
+        String url = "https://maps.googleapis.com/maps/api/place/textsearch/json?"+location+"&"+radius+"&"+type+"&key="+key;
+
+        return url;
+    }
+
     // make url for the call
     private String getMapsApiDirectionsUrl(LatLng origin,LatLng dest) {
         // Origin of route
@@ -276,6 +302,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Building the url to the web service
         String url = "https://maps.googleapis.com/maps/api/directions/json?"+parameters;
         return url;
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        Toast.makeText(getApplicationContext(), "fuck niggas", Toast.LENGTH_LONG);
+        Marker markerinfo = marker;
+        return true;
     }
 
     // Do the URL call in the background
@@ -444,5 +477,57 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             polyline = mMap.addPolyline(polyLineOptions);
         }}
+
+    public class JsonParser extends AsyncTask<Object, Object, JSONObject> {
+
+        private String readAll(Reader rd) throws IOException {
+            StringBuilder sb = new StringBuilder();
+            int cp;
+            while ((cp = rd.read()) != -1) {
+                sb.append((char) cp);
+            }
+            return sb.toString();
+        }
+
+        @Override
+        protected JSONObject doInBackground(Object... params) {
+            try {
+                InputStream is = new URL((String) params[0]).openStream();
+                BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+                String jsonText = readAll(rd);
+                JSONObject json = new JSONObject(jsonText);
+                return json;
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        protected void onPostExecute(JSONObject places) {
+            try {
+                JSONArray aPlaces = places.getJSONArray("results");
+
+                for (int i = 0; i < aPlaces.length(); i++) {
+
+                    JSONObject place = aPlaces.getJSONObject(i);
+                    // Explode every location object for the data..
+                    JSONObject location = place.getJSONObject("geometry");
+                    JSONObject oLatLng = location.getJSONObject("location");
+                    Double lat = Double.parseDouble(oLatLng.getString("lat"));
+                    Double lng = Double.parseDouble(oLatLng.getString("lng"));
+
+                    String placeName = place.getString("name");
+                    LatLng loc = new LatLng(lat, lng);
+                    mMap.addMarker(new MarkerOptions().position(loc).title(placeName));
+                }
+
+                System.out.println("asdf");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
 
