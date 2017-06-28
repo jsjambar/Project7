@@ -79,8 +79,9 @@ public class VirtualAssistantActivity extends AppCompatActivity implements AILis
                     ParameterList.toString()));;
 
             // Send ParameterList to MapsActivity/GooglePlacesActivity
-            Intent intent = new Intent();
-            intent.putExtra("Parameters", ParameterList);
+            Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+            intent.putExtra("Parameters", ParameterList.toString());
+            startActivity(intent);
         }else{
             StatusTextView.setTypeface(null, Typeface.NORMAL);
             StatusTextView.setText(String.format("You said: '%s'. The parameters are '%s'", result.getResolvedQuery(),

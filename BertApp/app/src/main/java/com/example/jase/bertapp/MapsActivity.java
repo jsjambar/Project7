@@ -7,8 +7,10 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -42,6 +44,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.gson.JsonElement;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -60,6 +63,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, GoogleMap.OnMarkerClickListener {
 
@@ -90,6 +94,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private final List<Polyline> lines = new ArrayList<>();
 
+    // Store parameters as string
+    private String TypeParameters;
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Instance of the application
@@ -99,11 +107,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         tree = new KDTree(2);
         mapsActivity = this;
 
+        Intent intent = getIntent();
+
         Bundle data = getIntent().getExtras();
+
         if (data != null) {
             preference = data.getString("step1");
             distance = data.getString("step2");
 
+            if(!Objects.equals(data.getString("Parameters"), "")){
+                this.TypeParameters = data.getString("Parameters");
+                Toast.makeText(this, this.TypeParameters, Toast.LENGTH_LONG).show();
+            }else{
+                Toast.makeText(this, "No parameters found", Toast.LENGTH_LONG).show();
+            }
         }
 
         String placesUrl = getPlacesUrl(preference, rDam, distance); // change rDam to newLoc
@@ -270,6 +287,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private String getPlacesUrl(String preference, LatLng loc, String range) {
         //https://maps.googleapis.com/maps/api/place/textsearch/xml?query=restaurants+in+Rotterdam&key=AIzaSyBKEDj2HEaWj4yheUYA0NQRtc0QsakDiLw
 
@@ -281,6 +299,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         String type = "type="+preference;
         String radius = "radius="+range;
         String key = "AIzaSyBKEDj2HEaWj4yheUYA0NQRtc0QsakDiLw";
+
+        // Set type to a stripped version of the value gotten from API.ai (needs testing)
+        if(!Objects.equals(TypeParameters, "")){
+
+            // Remove square brackets from TypeParameters and make lowercase
+            TypeParameters = TypeParameters.replaceAll("[\\[\\](){}]","").toLowerCase();
+
+            // Remove quotes from TypeParameters
+            TypeParameters = TypeParameters.replaceAll("\"", "");
+            type = "type="+TypeParameters;
+        }
+
         String url = "https://maps.googleapis.com/maps/api/place/textsearch/json?"+location+"&"+radius+"&"+type+"&key="+key;
 
         return url;
