@@ -9,7 +9,7 @@
         android:layout_height="match_parent">
 
         <EditText
-            android:id="@+id/username"
+            android:id="@+id/txtUsername"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -17,20 +17,20 @@
             android:text="Username" />
 
         <EditText
-            android:id="@+id/password"
+            android:id="@+id/txtPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPassword" />
 
         <Button
-            android:id="@+id/signUpButton"
+            android:id="@+id/btnConfirm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Sign up" />
 
         <TextView
-            android:id="@+id/debug"
+            android:id="@+id/txtDebug"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="TextView" />

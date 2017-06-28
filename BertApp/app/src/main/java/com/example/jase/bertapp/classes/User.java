@@ -3,6 +3,9 @@ package com.example.jase.bertapp.classes;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.ExecutionException;
@@ -19,14 +22,19 @@ public class User {
         this.password = password;
     }
 
-    public static QueryResult create(String username, String password) throws NoSuchAlgorithmException, ExecutionException, InterruptedException {
+    private static JSONObject executeQuery(String command, String username, String password) throws NoSuchAlgorithmException, ExecutionException, InterruptedException, JSONException {
         String hashedPassword = Tools.Hash(password);
         String urlAppendix = "?";
         urlAppendix += ("username="+username);
+        urlAppendix += ("&");
         urlAppendix += ("password="+hashedPassword);
-        AsyncTask<String, Void, QueryResult> result = new DatabaseHandler().execute("/users/register"+urlAppendix);
-        QueryResult qr = result.get();
-        Log.d("BERTBERTBERT", qr.message);
-        return qr;
+        AsyncTask<String, Void, JSONObject> taskResult = new DatabaseHandler().execute("/users/"+command+urlAppendix);
+        JSONObject result = taskResult.get();
+        Log.d("BERTBERTBERT", String.valueOf(result.getString("message")));
+        return result;
+    }
+
+    public static JSONObject create(String username, String password) throws InterruptedException, ExecutionException, NoSuchAlgorithmException, JSONException {
+        return executeQuery("register", username, password);
     }
 }

@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Build;
-import android.os.Debug;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -17,11 +16,8 @@ import android.widget.TextView;
 import com.google.gson.JsonElement;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import ai.api.AIListener;
 import ai.api.android.AIConfiguration;
@@ -44,7 +40,7 @@ public class VirtualAssistantActivity extends AppCompatActivity implements AILis
         setContentView(R.layout.activity_virtual_assistant);
 
         this.ListenButton = (Button) findViewById(R.id.startListeningButton);
-        this.StatusTextView = (TextView) findViewById(R.id.debug);
+        this.StatusTextView = (TextView) findViewById(R.id.txtDebug);
         this.Initialize();
     }
 
