@@ -123,7 +123,7 @@ public class MainNavigation extends AppCompatActivity
         btnFood.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                step2.putExtra("step1", "Food");
+                step2.putExtra("step1", "restaurant");
                 startActivity(step2);
             }
         });
@@ -131,7 +131,7 @@ public class MainNavigation extends AppCompatActivity
         btnGo.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                step2.putExtra("step1", "Go");
+                step2.putExtra("step1", "night_club");
                 startActivity(step2);
             }
         });
@@ -139,7 +139,7 @@ public class MainNavigation extends AppCompatActivity
         btnRelax.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                step2.putExtra("step1", "Relax");
+                step2.putExtra("step1", "spa");
                 startActivity(step2);
             }
         });

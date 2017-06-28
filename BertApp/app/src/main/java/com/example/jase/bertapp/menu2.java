@@ -39,7 +39,7 @@ public class menu2 extends AppCompatActivity {
             public void onClick(View v) {
                 distance = fieldDistance.getText().toString();
                 mapIntent.putExtra("step1", step1);
-                mapIntent.putExtra("step2", distance);
+                mapIntent.putExtra("step2", distance + "000");
                 startActivity(mapIntent);
             }
         });

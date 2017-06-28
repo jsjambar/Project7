@@ -38,7 +38,7 @@ public class menu extends AppCompatActivity implements PlaceSelectionListener {
         btnFood.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                step2.putExtra("step1", "Food");
+                step2.putExtra("step1", "restaurant");
                 startActivity(step2);
             }
         });
@@ -46,7 +46,7 @@ public class menu extends AppCompatActivity implements PlaceSelectionListener {
         btnGo.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                step2.putExtra("step1", "Go");
+                step2.putExtra("step1", "club");
                 startActivity(step2);
             }
         });
@@ -54,7 +54,7 @@ public class menu extends AppCompatActivity implements PlaceSelectionListener {
         btnRelax.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                step2.putExtra("step1", "Relax");
+                step2.putExtra("step1", "spa");
                 startActivity(step2);
             }
         });
