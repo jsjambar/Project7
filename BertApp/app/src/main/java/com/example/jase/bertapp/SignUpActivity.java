@@ -1,11 +1,15 @@
 package com.example.jase.bertapp;
 
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.example.jase.bertapp.classes.DatabaseHandler;
+import com.example.jase.bertapp.classes.QueryResult;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -33,7 +37,7 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     public void createUser(){
-
+        AsyncTask<String, Void, QueryResult> task = new DatabaseHandler().execute("testtablename", "testvalues");
         //this.Debug.setText(String.format("Username: %s, password: %s", this.PasswordField.getText().toString(), this.PasswordField.getText().toString()));
     }
 }
