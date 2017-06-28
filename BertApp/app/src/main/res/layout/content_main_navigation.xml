@@ -22,19 +22,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
-            android:text="Food and drinks" />
+            android:text="Food and drinks"
+            android:drawableLeft="@drawable/icon_food_drinks"/>
 
         <Button
             android:id="@+id/btnGo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Go out" />
+            android:text="Go out"
+            android:drawableLeft="@drawable/icon_going_out"/>
 
         <Button
             android:id="@+id/btnRelax"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Relaxation" />
+            android:text="Relaxation"
+            android:drawableLeft="@drawable/icon_relaxtion"/>
 
         <TextView
             android:id="@+id/txtOr"
