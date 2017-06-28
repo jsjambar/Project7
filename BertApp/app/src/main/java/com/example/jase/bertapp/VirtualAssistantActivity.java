@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.os.Debug;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -15,8 +16,12 @@ import android.widget.TextView;
 
 import com.google.gson.JsonElement;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import ai.api.AIListener;
 import ai.api.android.AIConfiguration;
@@ -31,17 +36,21 @@ public class VirtualAssistantActivity extends AppCompatActivity implements AILis
     private Button ListenButton;
     private TextView StatusTextView;
     public String ParameterString;
+    public ArrayList<JsonElement> ParameterList = new ArrayList<JsonElement>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_virtual_assistant);
+
+        this.ListenButton = (Button) findViewById(R.id.startListeningButton);
+        this.StatusTextView = (TextView) findViewById(R.id.debug);
         this.Initialize();
     }
 
     // Initialize controls and API.ai
     private void Initialize(){
-        // Asl for permission to use location
+        // Ask for permission to use RECORD_AUDIO
         ActivityCompat.requestPermissions(VirtualAssistantActivity.this,
                 new String[]{Manifest.permission.RECORD_AUDIO},
                 1);
@@ -50,46 +59,48 @@ public class VirtualAssistantActivity extends AppCompatActivity implements AILis
         final AIConfiguration config = new AIConfiguration("447b26a535ac45dfb92cda0b912da59d", ai.api.AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System);
 
-        this.AIService = AIService.getService(this, config);
-        this.AIService.setListener(this);
-        this.ListenButton = (Button) findViewById(R.id.startListeningButton);
-        this.StatusTextView = (TextView) findViewById(R.id.virtualAssistantStatus);
+        AIService = AIService.getService(this, config);
+        AIService.setListener(this);
+        ListenButton = (Button) findViewById(R.id.startListeningButton);
+        StatusTextView = (TextView) findViewById(R.id.virtualAssistantStatus);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     // Result has been found
-    public void onResult(AIResponse response) {
+    public void onResult(final AIResponse response) {
         Result result = response.getResult();
 
         if(result.getParameters() != null && !result.getParameters().isEmpty()){
             for (final Map.Entry<String, JsonElement> entry : result.getParameters().entrySet()) {
-                this.ParameterString += "(" + entry.getKey() + ", " + entry.getValue() + ") ";
+                ParameterList.add(entry.getValue());
             }
         }
 
-        Log.i("Query: ", result.getResolvedQuery());
-        Log.i("Action: ", result.getAction());
+        // Check if the action is "FindPlaceWithType"
+        if(Objects.equals(result.getAction(), "FindPlaceWithType")){
+            StatusTextView.setTypeface(null, Typeface.NORMAL);
+            StatusTextView.setText(String.format("You said: '%s'. The parameters are '%s'", result.getResolvedQuery(),
+                    ParameterList.toString()));;
 
-        this.StatusTextView.setTypeface(null, Typeface.NORMAL);
-        this.StatusTextView.setText(String.format("You said: '%s'", result.getResolvedQuery()));
-
-        // Check if the action is "FindLocation"
-        if(Objects.equals(result.getAction(), "FindLocation")){
-            Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
-            intent.putExtra("ParameterString", this.ParameterString);
-            startActivity(intent);
+            // Send ParameterList to MapsActivity/GooglePlacesActivity
+            Intent intent = new Intent();
+            intent.putExtra("Parameters", ParameterList);
+        }else{
+            StatusTextView.setTypeface(null, Typeface.NORMAL);
+            StatusTextView.setText(String.format("You said: '%s'. The parameters are '%s'", result.getResolvedQuery(),
+                    ParameterString));
         }
     }
 
     // Error message for debugging
     @Override
     public void onError(AIError error) {
-        Log.i("Error: ", error.getMessage());
+
+        StatusTextView.setText(error.toString());
     }
 
     @Override
     public void onAudioLevel(float level) {
-
     }
 
     @Override
@@ -107,10 +118,13 @@ public class VirtualAssistantActivity extends AppCompatActivity implements AILis
 
     @Override
     public void onListeningFinished() {
+
+        AIService.stopListening();
         Log.i("ListeningFinished", "Finished listening");
     }
 
     public void ListenButtonClick(final View view){
-        this.AIService.startListening();
+
+        AIService.startListening();
     }
 }
