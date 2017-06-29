@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BertApp</string>
+    <string name="app_name">RouteAssist</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="StartListeningButtonText">Ask Bert for help</string>
@@ -29,4 +29,16 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_settings">Settings</string>
+    <string name="hintPassword">Enter Password</string>
+    <string name="hintUsername">Enter Username</string>
+    <string name="btnSignUp">Sign up</string>
+    <string name="txtDebug">DEBUGTEXT</string>
+    <string name="teamName">Team Bert</string>
+    <string name="teamEmail">wedonthaveanemailaddress@yet.com</string>
+    <string name="txtFood">Food and drinks</string>
+    <string name="txtGo">Go out</string>
+    <string name="txtRelax">Relaxation</string>
+    <string name="txtMainHead">What would you like to do?</string>
+    <string name="txtSignUp">Sign up.</string>
+    <string name="txtLogIn">Log in.</string>
 </resources>

@@ -1,7 +1,9 @@
 package com.example.jase.bertapp;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -68,8 +70,8 @@ import java.util.Objects;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, GoogleMap.OnMarkerClickListener {
 
     // User preferences
-    String preference;
-    String distance;
+    private String preference;
+    private String distance;
 
     // Instance of map to use in click listeners.
     private MapsActivity mapsActivity;
@@ -83,8 +85,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     // Updatable marker.
     private Marker me;
+    private LatLng myLoc = null;
+    private LatLng myDest = null;
     // First update var
     private int first = 0;
+    private int firstGet = 0;
 
     // Rotterdam center.
     private LatLng rDam = new LatLng(51.9244201, 4.4777325);
@@ -123,19 +128,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
 
-        String placesUrl = getPlacesUrl(preference, rDam, distance); // change rDam to newLoc
-        new JsonParser().execute(placesUrl);
-
         MapsInitializer.initialize(getApplicationContext());
-
-        /*Context context = getApplicationContext();
-        int duration = Toast.LENGTH_SHORT;
-        CharSequence text = preference + " x " + distance;
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();*/
-
         tree = new KDTree(2);
-
         mapsActivity = this;
 
         MapsInitializer.initialize(getApplicationContext());
@@ -144,7 +138,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        // Google API Client that we use to get our location
+        // Google API Client that we use to login our location
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addConnectionCallbacks(this)
@@ -250,26 +244,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onLocationChanged(Location location) {
         LatLng newLoc = new LatLng(location.getLatitude(), location.getLongitude());
+        myLoc = newLoc;
 
         // Update our marker and move the camera to center the new position.
         me.setPosition(newLoc);
 
-        if(polyline != null) {
-            polyline.remove();
+        if(myLoc != null && myDest != null) {
+            String url = getMapsApiDirectionsUrl(myLoc, myDest);
+            ReadTask downloadTask = new ReadTask();
+            // Start downloading json data from Google Directions API
+            downloadTask.execute(url);
         }
-
-        // If location is selected we gotta do this...
-
-        /*
-        String url = getMapsApiDirectionsUrl(newLoc, new LatLng(51.9054439, 4.4644487));
-        ReadTask downloadTask = new ReadTask();
-        // Start downloading json data from Google Directions API
-        downloadTask.execute(url);
-        */
 
         // Move camera to the user's current location for one time
         if(first == 0) {
             mMap.moveCamera(CameraUpdateFactory.newLatLng(newLoc));
+            if(firstGet == 0) {
+                String placesUrl = getPlacesUrl(preference, newLoc, distance);
+                new JsonParser().execute(placesUrl);
+            }
             first++;
         }
     }
@@ -287,7 +280,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private String getPlacesUrl(String preference, LatLng loc, String range) {
         //https://maps.googleapis.com/maps/api/place/textsearch/xml?query=restaurants+in+Rotterdam&key=AIzaSyBKEDj2HEaWj4yheUYA0NQRtc0QsakDiLw
 
@@ -301,7 +293,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         String key = "AIzaSyBKEDj2HEaWj4yheUYA0NQRtc0QsakDiLw";
 
         // Set type to a stripped version of the value gotten from API.ai (needs testing)
-        if(!Objects.equals(TypeParameters, "")){
+        /*if(!Objects.equals(TypeParameters, "")){
 
             // Remove square brackets from TypeParameters and make lowercase
             TypeParameters = TypeParameters.replaceAll("[\\[\\](){}]","").toLowerCase();
@@ -309,10 +301,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // Remove quotes from TypeParameters
             TypeParameters = TypeParameters.replaceAll("\"", "");
             type = "type="+TypeParameters;
-        }
+        }*/
 
         String url = "https://maps.googleapis.com/maps/api/place/textsearch/json?"+location+"&"+radius+"&"+type+"&key="+key;
-
+        System.out.println("nigas");
         return url;
     }
 
@@ -325,7 +317,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Sensor enabled
         String sensor = "sensor=false";
         // Building the parameters to the web service
-        String parameters = str_origin+"&"+str_dest+"&"+sensor;
+        String parameters = str_origin+"&"+str_dest+"&"+sensor+"&mode=walking";
         // Building the url to the web service
         String url = "https://maps.googleapis.com/maps/api/directions/json?"+parameters;
         return url;
@@ -333,8 +325,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        Toast.makeText(getApplicationContext(), "fuck niggas", Toast.LENGTH_LONG);
-        Marker markerinfo = marker;
+        // If location is selected we gotta do this...
+        myDest = marker.getPosition();
+        marker.showInfoWindow();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
+                builder.setTitle(marker.getTitle())
+                        .setMessage("The route to your destination will now be shown.")
+                        .setNeutralButton("Okay!", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            String url = getMapsApiDirectionsUrl(myLoc, myDest);
+                            ReadTask downloadTask = new ReadTask();
+                            // Start downloading json data from Google Directions API
+                            downloadTask.execute(url);
+                        }});
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
         return true;
     }
 
@@ -502,6 +509,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 polyLineOptions.color(Color.BLUE);
             }
 
+            if(polyline != null){
+                polyline.remove();
+            }
+
             polyline = mMap.addPolyline(polyLineOptions);
         }}
 
@@ -535,9 +546,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         protected void onPostExecute(JSONObject places) {
             try {
                 JSONArray aPlaces = places.getJSONArray("results");
-
                 for (int i = 0; i < aPlaces.length(); i++) {
-
                     JSONObject place = aPlaces.getJSONObject(i);
                     // Explode every location object for the data..
                     JSONObject location = place.getJSONObject("geometry");
@@ -550,7 +559,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     mMap.addMarker(new MarkerOptions().position(loc).title(placeName));
                 }
 
-                System.out.println("asdf");
             } catch (JSONException e) {
                 e.printStackTrace();
             }

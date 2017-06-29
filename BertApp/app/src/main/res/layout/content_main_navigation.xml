@@ -9,11 +9,11 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/txtMainHead"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="What would you like to do?"
-            android:layout_marginTop="100dp"
+            android:text="@string/txtMainHead"
+            android:layout_marginTop="80dp"
             android:textAlignment="center"
             android:textSize="25sp" />
 
@@ -22,19 +22,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
-            android:text="Food and drinks" />
+            android:text="@string/txtFood"
+            android:drawableLeft="@drawable/icon_food_drinks"/>
 
         <Button
             android:id="@+id/btnGo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Go out" />
+            android:text="@string/txtGo"
+            android:drawableLeft="@drawable/icon_going_out"/>
 
         <Button
             android:id="@+id/btnRelax"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Relaxation" />
+            android:text="@string/txtRelax"
+            android:drawableLeft="@drawable/icon_relaxtion"/>
 
         <TextView
             android:id="@+id/txtOr"
