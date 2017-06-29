@@ -15,7 +15,7 @@ import org.json.JSONObject;
 import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.ExecutionException;
 
-public class LogInActivity extends AppCompatActivity {
+class LogInActivity extends AppCompatActivity {
 
     private EditText username;
     private EditText password;
