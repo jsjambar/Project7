@@ -12,7 +12,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
 import java.util.ArrayList;
@@ -31,7 +33,6 @@ public class VirtualAssistantActivity extends AppCompatActivity implements AILis
     private AIService AIService;
     private Button ListenButton;
     private TextView StatusTextView;
-    public String ParameterString;
     public ArrayList<JsonElement> ParameterList = new ArrayList<JsonElement>();
 
     @Override
@@ -79,13 +80,16 @@ public class VirtualAssistantActivity extends AppCompatActivity implements AILis
                     ParameterList.toString()));;
 
             // Send ParameterList to MapsActivity/GooglePlacesActivity
-            Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
-            intent.putExtra("Parameters", ParameterList.toString());
+            Intent intent = new Intent(this, MapsActivity.class);
+            String parameter = ParameterList.get(0).toString();
+
+            // Remove quotes from string
+            intent.putExtra("PARAMETER", parameter.replace("\"", ""));
             startActivity(intent);
         }else{
             StatusTextView.setTypeface(null, Typeface.NORMAL);
             StatusTextView.setText(String.format("You said: '%s'. The parameters are '%s'", result.getResolvedQuery(),
-                    ParameterString));
+                    this.ParameterList.toString()));
         }
     }
 

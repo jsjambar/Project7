@@ -72,6 +72,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     // User preferences
     private String preference;
     private String distance;
+    private String FromVirtualAssistantPreference;
 
     // Instance of map to use in click listeners.
     private MapsActivity mapsActivity;
@@ -120,12 +121,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             preference = data.getString("step1");
             distance = data.getString("step2");
 
-            // Check whether or not the Virtual Assistant has given parameters
-            if(!(data.getString("Parameters") == "") || data.getString("Parameters").isEmpty()){
-                this.TypeParameters = data.getString("Parameters");
-                Toast.makeText(this, this.TypeParameters, Toast.LENGTH_LONG).show();
+            // Check if parameter from VirtualAssistantAcvitity has been given
+            if(data.containsKey("PARAMETER")){
+                this.FromVirtualAssistantPreference = data.getString("PARAMETER");
+                //Toast.makeText(this, this.FromVirtualAssistantPreference, Toast.LENGTH_LONG).show();
             }else{
-                Toast.makeText(this, "No parameters found", Toast.LENGTH_LONG).show();
+                //Toast.makeText(this, "No preference given from the Virtual Asssistant", Toast.LENGTH_LONG).show();
             }
         }
 
@@ -289,20 +290,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Double rawLong = loc.longitude;
         String location = "location="+String.valueOf(rawLat)+","+String.valueOf(rawLong);
 
+
         String type = "type="+preference;
         String radius = "radius="+range;
         String key = "AIzaSyBKEDj2HEaWj4yheUYA0NQRtc0QsakDiLw";
 
-        // Set type to a stripped version of the value gotten from API.ai (needs testing)
-        /*if(!Objects.equals(TypeParameters, "")){
-
-            // Remove square brackets from TypeParameters and make lowercase
-            TypeParameters = TypeParameters.replaceAll("[\\[\\](){}]","").toLowerCase();
-
-            // Remove quotes from TypeParameters
-            TypeParameters = TypeParameters.replaceAll("\"", "");
-            type = "type="+TypeParameters;
-        }*/
+        // If the preference from the Virtual Assistant is not empty, set the type to given preference
+        if(!this.FromVirtualAssistantPreference.isEmpty()){
+           if(this.FromVirtualAssistantPreference == "Disco"){
+               type = "type=night_club";
+               Toast.makeText(this, type, Toast.LENGTH_LONG).show();
+           }else if(this.FromVirtualAssistantPreference == "Museum"){
+                type = "type=museum";
+               Toast.makeText(this, type, Toast.LENGTH_LONG).show();
+           }else if(this.FromVirtualAssistantPreference == "Movies"){
+                type = "type=cinema";
+               Toast.makeText(this, type, Toast.LENGTH_LONG).show();
+           }
+        }else{
+            Toast.makeText(this, type, Toast.LENGTH_LONG).show();
+        }
 
         String url = "https://maps.googleapis.com/maps/api/place/textsearch/json?"+location+"&"+radius+"&"+type+"&key="+key;
         System.out.println("nigas");
