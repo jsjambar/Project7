@@ -6,7 +6,8 @@
     tools:context=".menu">
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical" android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:weightSum="1">
 
         <TextView
             android:id="@+id/txtSignUp"
@@ -35,11 +36,18 @@
             android:inputType="textPassword"
             android:hint="@string/hintPassword"/>
 
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="My preference is:"
+            android:layout_weight="0.03" />
+
         <Spinner
             android:id="@+id/spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            />
+            android:layout_weight="0.08" />
 
         <Button
             android:id="@+id/btnConfirm"

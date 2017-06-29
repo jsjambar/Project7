@@ -120,7 +120,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             preference = data.getString("step1");
             distance = data.getString("step2");
 
-            if(!Objects.equals(data.getString("Parameters"), "")){
+            // Check whether or not the Virtual Assistant has given parameters
+            if(!(data.getString("Parameters") == "") || data.getString("Parameters").isEmpty()){
                 this.TypeParameters = data.getString("Parameters");
                 Toast.makeText(this, this.TypeParameters, Toast.LENGTH_LONG).show();
             }else{

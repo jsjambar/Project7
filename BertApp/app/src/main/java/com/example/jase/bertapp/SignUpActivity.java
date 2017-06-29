@@ -53,18 +53,18 @@ public class SignUpActivity extends AppCompatActivity {
                 // TODO: Make Log-in (Local and Server)
                 // TODO: Check if user already exists (Server)
 
-                try {
-                    JSONObject result = User.create(username.getText().toString(), password.getText().toString());
-                    debugText.setText(result.getString("message"));
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    JSONObject result = User.create(username.getText().toString(), password.getText().toString(), s.getSelectedItem().toString());
+//                    debugText.setText(result.getString("message"));
+//                } catch (NoSuchAlgorithmException e) {
+//                    e.printStackTrace();
+//                } catch (ExecutionException e) {
+//                    e.printStackTrace();
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
             }
         });
     }
