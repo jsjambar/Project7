@@ -35,10 +35,9 @@ public class SignUpActivity extends AppCompatActivity {
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: Check user input fields.
-                // TODO: Log-in
-                // TODO: Check if user already exists.
-                // TODO: ^^ Server-side stuff ^^
+                // TODO: Check user input fields. (Local)
+                // TODO: Make Log-in (Local and Server)
+                // TODO: Check if user already exists (Server)
 
                 try {
                     JSONObject result = User.create(username.getText().toString(), password.getText().toString());
