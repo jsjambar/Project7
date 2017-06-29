@@ -38,7 +38,7 @@ public class User {
         return executeQuery("register", username, password);
     }
 
-    public static JSONObject get(String username, String password) throws InterruptedException, ExecutionException, NoSuchAlgorithmException, JSONException {
-        return executeQuery("get", username, password);
+    public static JSONObject login(String username, String password) throws InterruptedException, ExecutionException, NoSuchAlgorithmException, JSONException {
+        return executeQuery("login", username, password);
     }
 }
