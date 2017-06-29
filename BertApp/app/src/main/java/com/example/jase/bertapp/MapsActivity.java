@@ -72,7 +72,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     // User preferences
     private String preference;
     private String distance;
-    private String FromVirtualAssistantPreference;
+    private String FromVirtualAssistantPreference = "";
 
     // Instance of map to use in click listeners.
     private MapsActivity mapsActivity;
@@ -125,8 +125,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if(data.containsKey("PARAMETER")){
                 this.FromVirtualAssistantPreference = data.getString("PARAMETER");
                 //Toast.makeText(this, this.FromVirtualAssistantPreference, Toast.LENGTH_LONG).show();
-            }else{
-                //Toast.makeText(this, "No preference given from the Virtual Asssistant", Toast.LENGTH_LONG).show();
             }
         }
 
