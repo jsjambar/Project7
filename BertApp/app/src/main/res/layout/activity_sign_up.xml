@@ -14,25 +14,29 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="Username" />
+            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-_"
+            android:hint="@string/hintUsername"/>
 
         <EditText
             android:id="@+id/txtPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:hint="@string/hintPassword"/>
 
         <Button
             android:id="@+id/btnConfirm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Sign up" />
+            android:text="@string/btnSignUp" />
 
         <TextView
             android:id="@+id/txtDebug"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TextView" />
+            android:text="@string/txtDebug"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"/>
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>
