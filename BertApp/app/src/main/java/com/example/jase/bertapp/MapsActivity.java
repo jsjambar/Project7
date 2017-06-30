@@ -71,7 +71,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     // User preferences
     private String preference;
-    private String distance;
+    private String distance = "5000";
     private String FromVirtualAssistantPreference = "";
 
     // Instance of map to use in click listeners.
@@ -119,12 +119,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         if (data != null) {
             preference = data.getString("step1");
-            distance = data.getString("step2");
+
+            if (data.containsKey("step2")) {
+                distance = data.getString("step2");
+            }
 
             // Check if parameter from VirtualAssistantAcvitity has been given
-            if(data.containsKey("PARAMETER")){
+            if (data.containsKey("PARAMETER")) {
                 this.FromVirtualAssistantPreference = data.getString("PARAMETER");
-                //Toast.makeText(this, this.FromVirtualAssistantPreference, Toast.LENGTH_LONG).show();
             }
         }
 
@@ -215,7 +217,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 e.printStackTrace();
             }
 
-            if(first == 0) {
+            if (first == 0) {
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                 first++;
             }
@@ -226,10 +228,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onConnected(Bundle bundle) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // Request permission
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
             //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
             //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
             return;
+
         }
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
     }
@@ -241,6 +248,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         ourLoc.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onLocationChanged(Location location) {
         LatLng newLoc = new LatLng(location.getLatitude(), location.getLongitude());
@@ -279,7 +287,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         startActivity(intent);
     }
 
-
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private String getPlacesUrl(String preference, LatLng loc, String range) {
         //https://maps.googleapis.com/maps/api/place/textsearch/xml?query=restaurants+in+Rotterdam&key=AIzaSyBKEDj2HEaWj4yheUYA0NQRtc0QsakDiLw
 
@@ -287,30 +295,46 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Double rawLat = loc.latitude;
         Double rawLong = loc.longitude;
         String location = "location="+String.valueOf(rawLat)+","+String.valueOf(rawLong);
-
-
         String type = "type="+preference;
         String radius = "radius="+range;
         String key = "AIzaSyBKEDj2HEaWj4yheUYA0NQRtc0QsakDiLw";
 
         // If the preference from the Virtual Assistant is not empty, set the type to given preference
-        if(!this.FromVirtualAssistantPreference.isEmpty()){
-           if(this.FromVirtualAssistantPreference == "Disco"){
+        if(!this.FromVirtualAssistantPreference.isEmpty() || this.FromVirtualAssistantPreference == null){
+
+           if(Objects.equals(this.FromVirtualAssistantPreference, "Disco")){
                type = "type=night_club";
-               Toast.makeText(this, type, Toast.LENGTH_LONG).show();
-           }else if(this.FromVirtualAssistantPreference == "Museum"){
+           }else if(Objects.equals(this.FromVirtualAssistantPreference, "Museum")){
                 type = "type=museum";
-               Toast.makeText(this, type, Toast.LENGTH_LONG).show();
-           }else if(this.FromVirtualAssistantPreference == "Movies"){
+           }else if(Objects.equals(this.FromVirtualAssistantPreference, "Movies")){
                 type = "type=cinema";
-               Toast.makeText(this, type, Toast.LENGTH_LONG).show();
+           }else if(Objects.equals(this.FromVirtualAssistantPreference, "Spa")){
+               type = "type=spa";
            }
-        }else{
-            Toast.makeText(this, type, Toast.LENGTH_LONG).show();
+           else if(Objects.equals(this.FromVirtualAssistantPreference, "Movie")){
+               type = "type=movie_theater";
+           }else if(Objects.equals(this.FromVirtualAssistantPreference, "Bus Station")){
+               type = "type=bus_station";
+           }else if(Objects.equals(this.FromVirtualAssistantPreference, "Airport")){
+               type = "type=airport";
+           }else if(Objects.equals(this.FromVirtualAssistantPreference, "Hospital")){
+               type = "type=hospital";
+           }else if(Objects.equals(this.FromVirtualAssistantPreference, "Alcohol")){
+               type = "type=liquor_store";
+           }else if(Objects.equals(this.FromVirtualAssistantPreference, "Beauty Salon")){
+               type = "type=beauty_salon";
+           }else if(Objects.equals(this.FromVirtualAssistantPreference, "Meal Takeaway")){
+               type = "type=meal_takeaway";
+           }
+           else if(Objects.equals(this.FromVirtualAssistantPreference, "Casino")){
+               type = "type=casino";
+           }else if(Objects.equals(this.FromVirtualAssistantPreference, "Meal Delivery")){
+               type = "type=meal_delivery";
+           }
         }
 
         String url = "https://maps.googleapis.com/maps/api/place/textsearch/json?"+location+"&"+radius+"&"+type+"&key="+key;
-        System.out.println("nigas");
+
         return url;
     }
 
