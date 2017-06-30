@@ -22,23 +22,23 @@ public class User {
         this.password = password;
     }
 
-    private static JSONObject executeQuery(String command, String username, String password) throws NoSuchAlgorithmException, ExecutionException, InterruptedException, JSONException {
+    private static JSONObject executeQuery(String command, String username, String password, String preference) throws NoSuchAlgorithmException, ExecutionException, InterruptedException, JSONException {
         String hashedPassword = Tools.Hash(password);
         String urlAppendix = "?";
         urlAppendix += ("username="+username);
-        urlAppendix += ("&");
-        urlAppendix += ("password="+hashedPassword);
+        urlAppendix += ("&password="+hashedPassword);
+        urlAppendix += ("&preference="+preference);
         AsyncTask<String, Void, JSONObject> taskResult = new DatabaseHandler().execute("/users/"+command+urlAppendix);
         JSONObject result = taskResult.get();
         Log.d("BERTBERTBERT", String.valueOf(result.getString("message")));
         return result;
     }
 
-    public static JSONObject create(String username, String password) throws InterruptedException, ExecutionException, NoSuchAlgorithmException, JSONException {
-        return executeQuery("register", username, password);
+    public static JSONObject create(String username, String password, String preference) throws InterruptedException, ExecutionException, NoSuchAlgorithmException, JSONException {
+        return executeQuery("register", username, password, preference);
     }
 
     public static JSONObject login(String username, String password) throws InterruptedException, ExecutionException, NoSuchAlgorithmException, JSONException {
-        return executeQuery("login", username, password);
+        return executeQuery("login", username, password, "null");
     }
 }
