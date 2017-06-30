@@ -27,9 +27,10 @@ public class User {
         String urlAppendix = "?";
         urlAppendix += ("username="+username);
         urlAppendix += ("&password="+hashedPassword);
-        urlAppendix += ("&preference="+preference);
+        urlAppendix += ("&preference="+preference.replace(" ","_"));
         AsyncTask<String, Void, JSONObject> taskResult = new DatabaseHandler().execute("/users/"+command+urlAppendix);
         JSONObject result = taskResult.get();
+        if (result == null) result = new JSONObject("{success: false, message: \"No response from server.\"}");
         Log.d("BERTBERTBERT", String.valueOf(result.getString("message")));
         return result;
     }
