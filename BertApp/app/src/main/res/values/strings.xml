@@ -41,4 +41,5 @@
     <string name="txtMainHead">What would you like to do?</string>
     <string name="txtSignUp">Sign up.</string>
     <string name="txtLogIn">Log in.</string>
+    <string name="title_activity_maps2">Map</string>
 </resources>

@@ -3,6 +3,7 @@ let app = express();
 let port = process.env.PORT || 3000;
 let mongoose = require('mongoose');
 let User = require('./app/models/user');
+let RotterdamDex = require('./app/models/rotterdam_dex');
 let bodyparser = require('body-parser');
 
 mongoose.Promise = global.Promise;
