@@ -39,6 +39,13 @@
             android:text="@string/txtRelax"
             android:drawableLeft="@drawable/icon_relaxtion"/>
 
+        <Button
+            android:id="@+id/buttonUseVirtualAsssitant"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/icon_virtual_assistant_3"
+            android:text="Virtual Assistant" />
+
         <TextView
             android:id="@+id/txtOr"
             android:layout_width="match_parent"
