@@ -26,7 +26,9 @@
             android:layout_marginTop="50dp"
             android:inputType="textPersonName"
             android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-_"
-            android:hint="@string/hintUsername"/>
+            android:hint="@string/hintUsername"
+            android:layout_marginLeft="@dimen/default_margin"
+            android:layout_marginRight="@dimen/default_margin"/>
 
         <EditText
             android:id="@+id/txtPassword"
@@ -34,33 +36,42 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPassword"
-            android:hint="@string/hintPassword"/>
+            android:hint="@string/hintPassword"
+            android:layout_marginLeft="@dimen/default_margin"
+            android:layout_marginRight="@dimen/default_margin"/>
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/txtPref"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="My preference is:"
-            android:layout_weight="0.03" />
+            android:text="@string/txtPref"
+            android:layout_weight="0.03"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="@dimen/default_margin"
+            android:layout_marginRight="@dimen/default_margin"/>
 
         <Spinner
             android:id="@+id/spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.08" />
+            android:layout_weight="0.08"
+            android:layout_marginLeft="@dimen/default_margin_small"
+            android:layout_marginRight="@dimen/default_margin_small"/>
 
         <Button
             android:id="@+id/btnConfirm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/btnSignUp" />
+            android:text="@string/btnSignUp"
+            android:layout_marginLeft="@dimen/default_margin_button"
+            android:layout_marginRight="@dimen/default_margin_button"/>
 
         <TextView
             android:id="@+id/txtDebug"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/txtDebug"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="15dp"/>
+            android:layout_marginLeft="@dimen/default_margin_small"
+            android:layout_marginTop="@dimen/default_margin_small"/>
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

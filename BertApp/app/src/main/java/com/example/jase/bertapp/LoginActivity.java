@@ -15,12 +15,13 @@ import org.json.JSONObject;
 import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.ExecutionException;
 
-class LogInActivity extends AppCompatActivity {
+public class LogInActivity extends AppCompatActivity {
 
     private EditText username;
     private EditText password;
     private TextView debugText;
     private Button confirmButton;
+    private TextView headertext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +32,7 @@ class LogInActivity extends AppCompatActivity {
         this.password = (EditText) findViewById(R.id.txtPassword);
         this.debugText = (TextView) findViewById(R.id.txtDebug);
         this.confirmButton = (Button) findViewById(R.id.btnConfirm);
+        this.headertext = (TextView) findViewById(R.id.txtLogIn);
 
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -39,7 +41,17 @@ class LogInActivity extends AppCompatActivity {
                 // TODO: Check if user already exists (Server)
                 try {
                     JSONObject result = User.login(username.getText().toString(), password.getText().toString());
-                    debugText.setText(result.getString("message"));
+                    if (result.getBoolean("success")){
+                        headertext.setText(String.format("Logged in successfully as \'%s\'.", username.getText().toString()));
+
+                        username.setVisibility(View.INVISIBLE);
+                        password.setVisibility(View.INVISIBLE);
+                        debugText.setVisibility(View.INVISIBLE);
+                        confirmButton.setVisibility(View.INVISIBLE);;
+                    }
+                    else{
+                        debugText.setText(String.format("Failed to log in: %s", result.getString("message")));
+                    }
                 } catch (NoSuchAlgorithmException e) {
                     e.printStackTrace();
                 } catch (ExecutionException e) {

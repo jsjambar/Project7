@@ -24,6 +24,9 @@ public class SignUpActivity extends AppCompatActivity {
     private TextView debugText;
     private Button confirmButton;
     private String[] PreferenceChoices;
+    private TextView headertext;
+    private Spinner spinner;
+    private TextView pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,15 +37,16 @@ public class SignUpActivity extends AppCompatActivity {
                 "Food and drinks", "Going out", "Relaxation"
         };
 
-        Spinner s = (Spinner) findViewById(R.id.spinner);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, this.PreferenceChoices);
-        s.setAdapter(adapter);
-
+        this.headertext = (TextView) findViewById(R.id.txtSignUp);
         this.username = (EditText) findViewById(R.id.txtUsername);
         this.password = (EditText) findViewById(R.id.txtPassword);
         this.debugText = (TextView) findViewById(R.id.txtDebug);
+        this.pref = (TextView) findViewById(R.id.txtPref);
         this.confirmButton = (Button) findViewById(R.id.btnConfirm);
+        this.spinner = (Spinner) findViewById(R.id.spinner);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, this.PreferenceChoices);
+        spinner.setAdapter(adapter);
 
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,8 +56,21 @@ public class SignUpActivity extends AppCompatActivity {
                 // SORTA-DONE: Check if user already exists (Server)
 
                 try {
-                    JSONObject result = User.create(username.getText().toString(), password.getText().toString(), s.getSelectedItem().toString());
+                    JSONObject result = User.create(username.getText().toString(), password.getText().toString(), spinner.getSelectedItem().toString());
                     debugText.setText(result.getString("message"));
+                    if (result.getBoolean("success")){
+                        headertext.setText(String.format("Account created successfully.\nYou can now log in as\n\'%s\'.", username.getText().toString()));
+
+                        username.setVisibility(View.INVISIBLE);
+                        password.setVisibility(View.INVISIBLE);
+                        debugText.setVisibility(View.INVISIBLE);
+                        pref.setVisibility(View.INVISIBLE);
+                        confirmButton.setVisibility(View.INVISIBLE);;
+                        spinner.setVisibility(View.INVISIBLE);
+                    }
+                    else{
+                        debugText.setText(String.format("Failed to register: %s", result.getString("message")));
+                    }
                 } catch (NoSuchAlgorithmException e) {
                     e.printStackTrace();
                 } catch (ExecutionException e) {
