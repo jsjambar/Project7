@@ -1,31 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single" android:title="Main">
-        <item
-            android:id="@+id/nav_navigate"
-            android:title="Navigate"
-            android:icon="@drawable/icon_navigate"/>
-        <item
-            android:id="@+id/nav_rotterdamDex"
-            android:title="Rotterdam Dex"
-            android:icon="@drawable/icon_rotterdam_dex"/>
+        <!--<item-->
+            <!--android:id="@+id/nav_navigate"-->
+            <!--android:title="Navigate"-->
+            <!--android:icon="@drawable/icon_navigate"/>-->
         <item
             android:id="@+id/nav_virtualAssistant"
             android:title="Virtual Assistant"
             android:icon="@drawable/icon_virtual_assistant"/>
-    </group>
-    <group android:checkableBehavior="single" android:title="User">
-        <item
-            android:id="@+id/nav_login"
-            android:title="Log in"
-            android:icon="@drawable/icon_log_in"/>
         <item
             android:id="@+id/nav_signup"
             android:title="Sign up"
             android:icon="@drawable/icon_sign_up"/>
         <item
-            android:id="@+id/nav_settings"
-            android:title="Settings"
-            android:icon="@drawable/icon_settings"/>
+            android:id="@+id/nav_login"
+            android:title="Log in"
+            android:icon="@drawable/icon_log_in"/>
     </group>
 </menu>
