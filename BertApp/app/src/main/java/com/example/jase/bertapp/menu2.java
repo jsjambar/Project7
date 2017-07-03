@@ -7,6 +7,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +15,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.jase.bertapp.R;
+import com.example.jase.bertapp.classes.MinMax;
 
 public class menu2 extends AppCompatActivity {
 
@@ -33,6 +35,7 @@ public class menu2 extends AppCompatActivity {
         Intent mapIntent = new Intent(getBaseContext(), MapsActivity.class);
         Button btnSearch = (Button) findViewById(R.id.btnSearch);
         EditText fieldDistance = (EditText) findViewById(R.id.distance);
+        fieldDistance.setFilters(new InputFilter[]{ new MinMax("1", "50")});
 
         btnSearch.setOnClickListener( new View.OnClickListener() {
             @Override

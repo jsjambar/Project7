@@ -100,7 +100,7 @@ public class MainNavigation extends AppCompatActivity
             startActivity(new Intent(this, VirtualAssistantActivity.class));
         } else if (id == R.id.nav_login) {
             // Handle login-Activity
-            startActivity(new Intent(this, LogInActivity.class));
+            startActivity(new Intent(this, LoginActivity.class));
         } else if (id == R.id.nav_signup) {
             // Handle sign up-Activity
             startActivity(new Intent(this, SignUpActivity.class));
