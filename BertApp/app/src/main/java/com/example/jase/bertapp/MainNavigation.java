@@ -100,7 +100,7 @@ public class MainNavigation extends AppCompatActivity
             startActivity(new Intent(this, VirtualAssistantActivity.class));
         } else if (id == R.id.nav_login) {
             // Handle login-Activity
-            startActivity(new Intent(this, LogInActivity.class));
+            startActivity(new Intent(this, LoginActivity.class));
         } else if (id == R.id.nav_signup) {
             // Handle sign up-Activity
             startActivity(new Intent(this, SignUpActivity.class));
@@ -117,8 +117,10 @@ public class MainNavigation extends AppCompatActivity
         Button btnFood = (Button) findViewById(R.id.btnFood);
         Button btnGo = (Button) findViewById(R.id.btnGo);
         Button btnRelax = (Button) findViewById(R.id.btnRelax);
+        Button buttonUseVirtualAssistant = (Button) findViewById(R.id.buttonUseVirtualAssistant);
 
         Intent step2 = new Intent(getBaseContext(), menu2.class);
+        Intent virtualAssistantIntent = new Intent(getBaseContext(), VirtualAssistantActivity.class);
 
         btnFood.setOnClickListener( new View.OnClickListener() {
             @Override
@@ -141,6 +143,13 @@ public class MainNavigation extends AppCompatActivity
             public void onClick(View v) {
                 step2.putExtra("step1", "spa");
                 startActivity(step2);
+            }
+        });
+
+        buttonUseVirtualAssistant.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(virtualAssistantIntent);
             }
         });
     }

@@ -54,7 +54,7 @@
             android:name=".MapsActivity"
             android:label="@string/app_name" />
         <activity android:name=".VirtualAssistantActivity" />
-        <activity android:name=".LogInActivity" />
+        <activity android:name=".LoginActivity" />
         <activity android:name=".SignUpActivity" />
     </application>
 
