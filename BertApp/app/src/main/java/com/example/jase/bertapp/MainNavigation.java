@@ -52,6 +52,10 @@ public class MainNavigation extends AppCompatActivity
             ActivityCompat.requestPermissions(MainNavigation.this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     1);
+
+            finish();
+            startActivity(getIntent());
+            
             return;
 
         }
