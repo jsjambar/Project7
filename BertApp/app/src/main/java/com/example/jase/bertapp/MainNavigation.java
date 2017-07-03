@@ -30,10 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainNavigation extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, PlaceSelectionListener {
-
-    private TextView mPlaceDetailsText;
-    private TextView mPlaceAttribution;
+        implements NavigationView.OnNavigationItemSelectedListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +69,6 @@ public class MainNavigation extends AppCompatActivity
         }
 
         this.InitializeChoices();
-        this.InitializeGooglePlaces();
     }
 
     @Override
@@ -168,61 +164,5 @@ public class MainNavigation extends AppCompatActivity
                 startActivity(virtualAssistantIntent);
             }
         });
-    }
-
-    void InitializeGooglePlaces(){
-        // GOOGLE PLACES //
-
-        // Retrieve the PlaceAutocompleteFragment.
-        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
-                getFragmentManager().findFragmentById(R.id.autocomplete_fragment);
-
-        // Register a listener to receive callbacks when a place has been selected or an error has
-        // occurred.
-        autocompleteFragment.setOnPlaceSelectedListener(this);
-
-        // Retrieve the TextViews that will display details about the selected place.
-        mPlaceDetailsText = (TextView) findViewById(R.id.place_details);
-        mPlaceAttribution = (TextView) findViewById(R.id.place_attribution);
-    }
-
-    /**
-     * Callback invoked when a place has been selected from the PlaceAutocompleteFragment.
-     */
-    @Override
-    public void onPlaceSelected(Place place) {
-        Log.i("Place: ", place.toString());
-        // Format the returned place's details and display them in the TextView.
-        mPlaceDetailsText.setText(formatPlaceDetails(getResources(), place.getName(), place.getId(),
-                place.getAddress(), place.getPhoneNumber(), place.getWebsiteUri()));
-
-        CharSequence attributions = place.getAttributions();
-        if (!TextUtils.isEmpty(attributions)) {
-            mPlaceAttribution.setText(Html.fromHtml(attributions.toString()));
-            Log.i("DetailsFound:", place.toString());
-        } else {
-            mPlaceAttribution.setText("");
-            Log.i("DetailsNotFound: ", place.toString());
-        }
-    }
-
-    /**
-     * Callback invoked when PlaceAutocompleteFragment encounters an error.
-     */
-    @Override
-    public void onError(Status status) {
-
-        Toast.makeText(this, "Place selection failed: " + status.getStatusMessage(),
-                Toast.LENGTH_SHORT).show();
-    }
-
-    /**
-     * Helper method to format information about a place nicely.
-     */
-    private static Spanned formatPlaceDetails(Resources res, CharSequence name, String id,
-                                              CharSequence address, CharSequence phoneNumber, Uri websiteUri) {
-        return Html.fromHtml(res.getString(R.string.place_details, name, id, address, phoneNumber,
-                websiteUri));
-
     }
 }
