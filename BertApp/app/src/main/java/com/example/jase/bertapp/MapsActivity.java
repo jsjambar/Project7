@@ -236,11 +236,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
 
-            ActivityCompat.requestPermissions(MapsActivity.this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    1);
             return;
-
         }
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
     }
