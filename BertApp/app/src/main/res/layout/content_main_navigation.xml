@@ -29,6 +29,7 @@
             android:background="@color/colorPrimary"
             android:drawableLeft="@drawable/icon_food_drinks"
             android:text="@string/txtFood"
+<<<<<<< HEAD
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textColor="@color/aidialog_background" />
 
@@ -39,10 +40,14 @@
             android:layout_marginTop="10dp">
 
         </android.support.v7.widget.CardView>
+=======
+            android:drawableLeft="@drawable/icon_food_drinks"/>
+>>>>>>> 7b835631a09661fc44a163f0fef97239f5e74ad5
 
         <Button
             android:id="@+id/btnGo"
             android:layout_width="match_parent"
+<<<<<<< HEAD
             android:layout_height="@dimen/place_autocomplete_prediction_height"
             android:background="@color/colorPrimary"
             android:drawableLeft="@drawable/icon_going_out"
@@ -57,10 +62,16 @@
             android:layout_marginLeft="16dp"
             android:autoLink="all"
             android:textAppearance="?android:attr/textAppearanceMedium" />
+=======
+            android:layout_height="wrap_content"
+            android:text="@string/txtGo"
+            android:drawableLeft="@drawable/icon_going_out"/>
+>>>>>>> 7b835631a09661fc44a163f0fef97239f5e74ad5
 
         <Button
             android:id="@+id/btnRelax"
             android:layout_width="match_parent"
+<<<<<<< HEAD
             android:layout_height="@dimen/place_autocomplete_prediction_height"
             android:background="@color/colorPrimary"
             android:drawableLeft="@drawable/icon_relaxtion"
@@ -88,5 +99,18 @@
             android:text="Virtual Assistant"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textColor="@color/common_google_signin_btn_text_dark_default" />
+=======
+            android:layout_height="wrap_content"
+            android:text="@string/txtRelax"
+            android:drawableLeft="@drawable/icon_relaxtion"/>
+
+        <Button
+            android:id="@+id/buttonUseVirtualAssistant"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/icon_virtual_assistant_3"
+            android:text="Virtual Assistant" />
+
+>>>>>>> 7b835631a09661fc44a163f0fef97239f5e74ad5
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>
