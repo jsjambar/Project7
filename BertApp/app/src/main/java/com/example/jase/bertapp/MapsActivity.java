@@ -299,7 +299,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         String radius = "radius="+range;
         String key = "AIzaSyBKEDj2HEaWj4yheUYA0NQRtc0QsakDiLw";
 
-        // If the preference from the Virtual Assistant is not empty, set the type to given preference
+        // If the preference from the Virtual Assistant is not empty, se the type to given preference
         if(!this.FromVirtualAssistantPreference.isEmpty() || this.FromVirtualAssistantPreference == null){
 
            if(Objects.equals(this.FromVirtualAssistantPreference, "Disco")){
@@ -333,13 +333,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
            }
         }
 
-        String url = "https://maps.googleapis.com/maps/api/place/textsearch/json?"+location+"&"+radius+"&"+type+"&key="+key;
+        //String url = "https://maps.googleapis.com/maps/api/place/textsearch/json?"+location+"&"+radius+"&"+type+"point_of_interest&key="+key;
+
+        String url = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=rotterdam+point+of+interest&type"+type+"&language=en&key="+key;
+        Log.i("Url:", url);
 
         return url;
     }
 
     // make url for the call
     private String getMapsApiDirectionsUrl(LatLng origin,LatLng dest) {
+        String wayPoints = "Koopgoot,Rotterdam|Euromast,Rotterdam|Markthal,Rotterdam|Blijdorp,Rotterdam|Erasmusbrug|Kubuswoning,Rotterdam";
+
         // Origin of route
         String str_origin = "origin="+origin.latitude+","+origin.longitude;
         // Destination of route
@@ -347,7 +352,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Sensor enabled
         String sensor = "sensor=false";
         // Building the parameters to the web service
-        String parameters = str_origin+"&"+str_dest+"&"+sensor+"&mode=walking";
+        String parameters = str_origin+"&"+str_dest+"&"+sensor+"&mode=walking&waypoints="+wayPoints;
         // Building the url to the web service
         String url = "https://maps.googleapis.com/maps/api/directions/json?"+parameters;
         return url;
@@ -357,6 +362,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public boolean onMarkerClick(Marker marker) {
         // If location is selected we gotta do this...
         myDest = marker.getPosition();
+
         marker.showInfoWindow();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
@@ -444,7 +450,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             String polyline = "";
                             polyline = (String) ((JSONObject) ((JSONObject) jSteps.get(k)).get("polyline")).get("points");
                             List<LatLng> list = decodePoly(polyline);
-                            for(int l = 0 ; l < list.size() ; l ++){
+                             for(int l = 0 ; l < list.size() ; l ++){
                                 HashMap<String, String> hm = new HashMap<String, String>();
                                 hm.put("lat",
                                         Double.toString(((LatLng) list.get(l)).latitude));
